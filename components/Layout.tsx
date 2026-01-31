@@ -122,7 +122,10 @@ const Layout: React.FC<LayoutProps> = ({ children, title, showBack, hideNav }) =
                 <button 
                   onClick={handleLanguageToggle}
                   className="w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-all"
-                  style={{ color: THEME.primary.darker }}
+                  style={{ 
+                    backgroundColor: THEME.primary.lighter,
+                    color: THEME.primary.darker
+                  }}
                 >
                   <Languages size={20} />
                   {t('switchLanguage')} ({language === 'English' ? 'English' : 'हिंदी'})
@@ -149,7 +152,10 @@ const Layout: React.FC<LayoutProps> = ({ children, title, showBack, hideNav }) =
                 <button 
                   onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} 
                   className="w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-all mb-2"
-                  style={{ color: THEME.neutral.text.primary }}
+                  style={{ 
+                    backgroundColor: theme === 'light' ? THEME.neutral.bg.dark : THEME.primary.lighter,
+                    color: theme === 'light' ? 'white' : THEME.primary.darker
+                  }}
                 >
                   {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
                   {theme === 'light' ? t('darkMode') : t('lightMode')}
