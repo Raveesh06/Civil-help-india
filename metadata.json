@@ -1,0 +1,9 @@
+{
+  "name": "Civic Assist India",
+  "description": "A production-ready civic assistance platform for Indian citizens to raise issues, track complaints, and store documents with assisted support for elderly and disabled users.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera",
+    "geolocation"
+  ]
+}
