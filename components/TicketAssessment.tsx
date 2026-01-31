@@ -340,6 +340,93 @@ const TicketAssessment: React.FC<TicketAssessmentProps> = ({
                 </p>
               </div>
             )}
+
+            {/* Emergency Resources for High Urgency */}
+            {result.urgency === 'high' && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-red-100/70 dark:bg-red-900/50 border-l-4 border-red-600 p-4 rounded-lg"
+              >
+                <p className={`text-xs font-black uppercase tracking-widest ${style.text} opacity-80 mb-3`}>
+                  {language === 'English' ? '🚨 Emergency Resources' : '🚨 आपातकालीन संसाधन'}
+                </p>
+                
+                {/* Police Contact */}
+                <div className="mb-4 p-3 bg-white/50 dark:bg-black/30 rounded-lg">
+                  <p className={`font-bold ${style.text} text-sm mb-2`}>
+                    {language === 'English' ? 'Police Emergency' : 'पुलिस आपातकाल'}
+                  </p>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className={`text-sm font-semibold ${style.text}`}>
+                        {language === 'English' ? 'Police Hotline (All India):' : 'पुलिस हॉटलाइन (सभी भारत):'}
+                      </span>
+                      <a 
+                        href="tel:100"
+                        className="bg-red-600 text-white px-3 py-1 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors"
+                      >
+                        100
+                      </a>
+                    </div>
+                    <p className={`text-xs ${style.text} opacity-75`}>
+                      {language === 'English' 
+                        ? 'Call for any emergency requiring police assistance'
+                        : 'पुलिस सहायता के लिए कॉल करें'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Government Resources */}
+                <div className="p-3 bg-white/50 dark:bg-black/30 rounded-lg">
+                  <p className={`font-bold ${style.text} text-sm mb-2`}>
+                    {language === 'English' ? 'Government Portals' : 'सरकारी पोर्टल'}
+                  </p>
+                  <div className="space-y-2">
+                    <a 
+                      href="https://cybercrime.gov.in"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full text-left p-2 bg-red-50 dark:bg-red-900/30 rounded hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                    >
+                      <p className={`font-bold text-xs ${style.text}`}>
+                        {language === 'English' ? 'Cyber Crime Complaint Portal' : 'साइबर अपराध शिकायत पोर्टल'}
+                      </p>
+                      <p className="text-[10px] text-red-600 dark:text-red-400">cybercrime.gov.in</p>
+                    </a>
+                    <a 
+                      href="https://pgportal.gov.in"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full text-left p-2 bg-red-50 dark:bg-red-900/30 rounded hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                    >
+                      <p className={`font-bold text-xs ${style.text}`}>
+                        {language === 'English' ? 'Public Grievance Portal' : 'जनशिकायत पोर्टल'}
+                      </p>
+                      <p className="text-[10px] text-red-600 dark:text-red-400">pgportal.gov.in</p>
+                    </a>
+                    <a 
+                      href="https://icjs.gov.in"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full text-left p-2 bg-red-50 dark:bg-red-900/30 rounded hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                    >
+                      <p className={`font-bold text-xs ${style.text}`}>
+                        {language === 'English' ? 'Integrated Crime & Criminal Tracking' : 'अपराध ट्रैकिंग'}
+                      </p>
+                      <p className="text-[10px] text-red-600 dark:text-red-400">icjs.gov.in</p>
+                    </a>
+                  </div>
+                </div>
+
+                <p className={`text-[10px] ${style.text} opacity-70 mt-3`}>
+                  {language === 'English'
+                    ? 'Take immediate action for emergencies. File this complaint to maintain an official record.'
+                    : 'आपातकाल में तुरंत कार्रवाई करें। आधिकारिक रिकॉर्ड रखने के लिए यह शिकायत दर्ज करें।'}
+                </p>
+              </motion.div>
+            )}
           </div>
         </div>
       </div>
