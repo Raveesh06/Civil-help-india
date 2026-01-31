@@ -16,9 +16,9 @@ interface LayoutProps {
 const Logo = ({ className = "w-10 h-10" }: { className?: string }) => (
   <div className={`${className} rounded-xl flex items-center justify-center shadow-sm relative overflow-hidden p-1`} style={{ backgroundColor: THEME.primary.lighter }}>
     <img 
-      src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&auto=format&fit=crop&w=128&h=128&q=80" 
-      alt="Gavel Logo"
-      className="w-full h-full object-cover rounded-lg mix-blend-multiply opacity-95"
+      src="/scales-of-justice-logo.svg" 
+      alt="Scales of Justice Logo"
+      className="w-full h-full object-contain rounded-lg opacity-95"
     />
     <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: `${THEME.primary.light}1a` }} />
   </div>

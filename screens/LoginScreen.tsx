@@ -75,9 +75,9 @@ const LoginScreen: React.FC = () => {
           <div className="w-24 h-24 rounded-3xl mx-auto flex items-center justify-center text-white mb-6 shadow-[0_15px_35px_-5px_rgba(186,230,253,0.5)] relative p-2"
             style={{ backgroundColor: THEME.primary.lighter }}>
              <img 
-               src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&h=256&q=80" 
-               alt="Gavel Logo" 
-               className="w-full h-full object-cover rounded-2xl mix-blend-multiply brightness-110 opacity-95"
+               src="/scales-of-justice-logo.svg" 
+               alt="Scales of Justice Logo" 
+               className="w-full h-full object-contain rounded-2xl brightness-110 opacity-95"
              />
              <div className="absolute inset-0 rounded-3xl pointer-events-none" 
                style={{ backgroundColor: `${THEME.primary.light}0f` }} />
