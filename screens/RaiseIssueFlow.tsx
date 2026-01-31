@@ -60,7 +60,7 @@ const OptionSelection = ({ reset }: { reset: () => void }) => {
   return (
     <Layout title={t('raiseIssue')} showBack>
       <div className="space-y-4">
-        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">{t('chooseMethod')}</h2>
+        <h2 className="text-xl font-bold text-black dark:text-white mb-2">{t('chooseMethod')}</h2>
         <div className="grid grid-cols-1 gap-4">
           <SelectionCard 
             icon={<FileText className="text-blue-600" size={32} />}
@@ -479,23 +479,23 @@ const AIReviewScreen = ({ category, selections, address, description, freeTextIn
           language={language}
         />
 
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 p-6 rounded-3xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded-bl-xl text-[10px] font-bold text-blue-800 dark:text-blue-200 uppercase">Summary</div>
-          <h3 className="font-bold text-lg mb-4 text-blue-900 dark:text-blue-100">{language === 'English' ? 'Complaint Details' : 'शिकायत विवरण'}</h3>
+        <div className="bg-slate-800 dark:bg-slate-900 border border-slate-700 dark:border-slate-800 p-6 rounded-3xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 bg-slate-700 dark:bg-slate-800 px-3 py-1 rounded-bl-xl text-[10px] font-bold text-slate-200 dark:text-slate-100 uppercase">Summary</div>
+          <h3 className="font-bold text-lg mb-4 text-white dark:text-white">{language === 'English' ? 'Complaint Details' : 'शिकायत विवरण'}</h3>
           <div className="space-y-4 text-sm font-medium">
             {!freeTextInput && (
-              <div className="pb-3 border-b border-blue-100/50 dark:border-blue-800/50">
-                <span className="text-[10px] uppercase text-blue-700 dark:text-blue-300 block mb-1 font-bold">{language === 'English' ? 'Subject' : 'विषय'}</span>
-                <p className="text-blue-900 dark:text-blue-100 font-semibold">{language === 'English' ? 'Grievance' : 'शिकायत'}: {category} - {selections.join(', ')}</p>
+              <div className="pb-3 border-b border-slate-600/50 dark:border-slate-700/50">
+                <span className="text-[10px] uppercase text-slate-300 dark:text-slate-400 block mb-1 font-bold">{language === 'English' ? 'Subject' : 'विषय'}</span>
+                <p className="text-white dark:text-slate-100 font-semibold">{language === 'English' ? 'Grievance' : 'शिकायत'}: {category} - {selections.join(', ')}</p>
               </div>
             )}
-            <div className="pb-3 border-b border-blue-100/50 dark:border-blue-800/50">
-              <span className="text-[10px] uppercase text-blue-700 dark:text-blue-300 block mb-1 font-bold">{language === 'English' ? 'Description' : 'विवरण'}</span>
-              <p className="text-blue-900 dark:text-blue-100 font-semibold">{finalDescription || (language === 'English' ? 'Requesting verification.' : 'सत्यापन का अनुरोध।')}</p>
+            <div className="pb-3 border-b border-slate-600/50 dark:border-slate-700/50">
+              <span className="text-[10px] uppercase text-slate-300 dark:text-slate-400 block mb-1 font-bold">{language === 'English' ? 'Description' : 'विवरण'}</span>
+              <p className="text-white dark:text-slate-100 font-semibold">{finalDescription || (language === 'English' ? 'Requesting verification.' : 'सत्यापन का अनुरोध।')}</p>
             </div>
             <div>
-              <span className="text-[10px] uppercase text-blue-700 dark:text-blue-300 block mb-1 font-bold">{language === 'English' ? 'Location' : 'स्थान'}</span>
-              <p className="flex items-center gap-2 text-blue-900 dark:text-blue-100 font-semibold"><MapPin size={14} className="text-rose-400" /> {address}</p>
+              <span className="text-[10px] uppercase text-slate-300 dark:text-slate-400 block mb-1 font-bold">{language === 'English' ? 'Location' : 'स्थान'}</span>
+              <p className="flex items-center gap-2 text-white dark:text-slate-100 font-semibold"><MapPin size={14} className="text-rose-400" /> {address}</p>
             </div>
           </div>
         </div>
