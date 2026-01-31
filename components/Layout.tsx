@@ -174,26 +174,26 @@ const Layout: React.FC<LayoutProps> = ({ children, title, showBack, hideNav }) =
       {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0 h-screen">
         {/* Header */}
-        <header className="border-b px-6 py-4 sticky top-0 z-30 flex items-center justify-between shadow-sm backdrop-blur-md"
+        <header className="border-b px-6 py-4 sticky top-0 z-30 flex items-center justify-between shadow-sm backdrop-blur-md dark:bg-slate-800"
           style={{ 
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            borderColor: THEME.primary.lighter
+            backgroundColor: theme === 'dark' ? undefined : 'rgba(255, 255, 255, 0.8)',
+            borderColor: theme === 'dark' ? '#334155' : THEME.primary.lighter
           }}>
           <div className="flex items-center gap-4">
             {!hideNav && !showBack && (
                <button onClick={toggleDrawer} className="p-2 rounded-xl transition-colors"
-                 style={{ color: THEME.primary.light }}>
+                 style={{ color: theme === 'dark' ? 'white' : THEME.primary.light }}>
                  <Menu size={24} />
                </button>
             )}
             {showBack && (
               <button onClick={handleBack} className="p-2 rounded-full transition-colors"
-                style={{ color: THEME.primary.light }}>
+                style={{ color: theme === 'dark' ? 'white' : THEME.primary.light }}>
                 <ChevronLeft size={isElderlyMode ? 28 : 24} />
               </button>
             )}
             <h1 className={`${isElderlyMode ? 'text-2xl' : 'text-xl'} font-extrabold tracking-tight`}
-              style={{ color: THEME.primary.darker }}>
+              style={{ color: theme === 'dark' ? 'white' : THEME.primary.darker }}>
               {title || t('appTitle')}
             </h1>
           </div>
@@ -202,7 +202,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, showBack, hideNav }) =
                <button 
                 onClick={() => setNotificationOpen(true)}
                 className="p-2 rounded-xl transition-colors relative"
-                style={{ color: THEME.primary.light }}
+                style={{ color: theme === 'dark' ? 'white' : THEME.primary.light }}
                >
                  <Bell size={24} />
                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
@@ -231,10 +231,10 @@ const Layout: React.FC<LayoutProps> = ({ children, title, showBack, hideNav }) =
 
         {/* Mobile Bottom Nav */}
         {!hideNav && (
-          <nav className="md:hidden fixed bottom-0 left-0 right-0 flex justify-around items-center py-3 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t"
+          <nav className="md:hidden fixed bottom-0 left-0 right-0 flex justify-around items-center py-3 z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t dark:bg-slate-800"
             style={{ 
-              backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              borderColor: THEME.primary.lighter
+              backgroundColor: theme === 'dark' ? undefined : 'rgba(255, 255, 255, 0.9)',
+              borderColor: theme === 'dark' ? '#334155' : THEME.primary.lighter
             }}>
             {navItems.map((item) => {
               const Icon = item.icon;
