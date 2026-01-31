@@ -87,7 +87,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, showBack, hideNav }) =
                 style={{ borderColor: THEME.primary.lighter }}>
                 <div className="flex items-center gap-3">
                   <Logo />
-                  <span className="font-extrabold text-xl tracking-tight" style={{ color: THEME.primary.darker }}>
+                  <span className="font-extrabold text-xl tracking-tight" style={{ color: theme === 'dark' ? THEME.dark.text.primary : THEME.neutral.text.secondary }}>
                     {t('appTitle')}
                   </span>
                 </div>
