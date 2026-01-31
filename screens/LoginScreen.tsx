@@ -6,21 +6,39 @@ import { HelpCircle, Accessibility } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const LoginScreen: React.FC = () => {
-  const { setScreen, language, isElderlyMode, setElderlyMode, setUserPhone, setUserName, t } = useApp();
+  const { setScreen, language, isElderlyMode, setElderlyMode, setUserPhone, setUserName, setUserEmail, t } = useApp();
   const [phone, setPhone] = useState('');
   const [name, setNameInput] = useState('');
+  const [email, setEmail] = useState('');
   const [showHelp, setShowHelp] = useState(false);
+  const [emailError, setEmailError] = useState('');
+
+  const validateEmail = (emailValue: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(emailValue);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    if (value && !validateEmail(value)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length === 10 && name.trim().length > 1) {
+    if (phone.length === 10 && name.trim().length > 1 && email && validateEmail(email)) {
       setUserPhone(phone);
       setUserName(name);
+      setUserEmail(email);
       setScreen(Screen.OTP);
     }
   };
 
-  const isFormValid = phone.length === 10 && name.trim().length > 1;
+  const isFormValid = phone.length === 10 && name.trim().length > 1 && email && validateEmail(email) && !emailError;
 
   return (
     <div className={`min-h-screen flex flex-col p-6 bg-[#F8FBFF] max-w-md mx-auto relative overflow-hidden ${isElderlyMode ? 'elderly-mode' : ''}`}>
@@ -72,6 +90,22 @@ const LoginScreen: React.FC = () => {
                   className={`w-full bg-sky-50/50 border border-sky-50 rounded-xl py-4 px-4 focus:ring-2 focus:ring-sky-200 outline-none transition-all font-bold text-sky-900 ${isElderlyMode ? 'text-2xl' : 'text-lg'}`}
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-extrabold text-sky-300 mb-2 uppercase tracking-widest">
+                {language === 'English' ? 'Email Address' : 'ईमेल पता'}
+              </label>
+              <div className="relative">
+                <input 
+                  type="email"
+                  placeholder={language === 'English' ? 'you@example.com' : 'आप@उदाहरण.com'}
+                  value={email}
+                  onChange={handleEmailChange}
+                  className={`w-full bg-sky-50/50 border ${emailError ? 'border-rose-300' : 'border-sky-50'} rounded-xl py-4 px-4 focus:ring-2 focus:ring-sky-200 outline-none transition-all font-bold text-sky-900 ${isElderlyMode ? 'text-2xl' : 'text-lg'}`}
+                />
+              </div>
+              {emailError && <p className="text-rose-500 text-xs font-bold mt-1">{emailError}</p>}
             </div>
 
             <div>

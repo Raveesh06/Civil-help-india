@@ -5,6 +5,7 @@ import { useApp } from '../AppContext';
 import { Screen, Category, Complaint } from '../types';
 import { FileText, Mic, Users, CheckCircle, ChevronRight, AlertCircle, Loader2, MapPin } from 'lucide-react';
 import FilingAnimation from '../components/FilingAnimation';
+import TicketAssessment from '../components/TicketAssessment';
 
 const RaiseIssueFlow: React.FC = () => {
   const { currentScreen, t } = useApp();
@@ -309,6 +310,14 @@ const AIReviewScreen = ({ category, selections, address, description }: any) => 
   return (
     <Layout title={language === 'English' ? "Review & Submit" : "समीक्षा और सबमिट करें"} showBack>
       <div className="space-y-6">
+        {/* Ticket Assessment Component */}
+        <TicketAssessment
+          category={category}
+          selections={selections}
+          description={description}
+          language={language}
+        />
+
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 p-6 rounded-3xl relative overflow-hidden">
           <div className="absolute top-0 right-0 bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded-bl-xl text-[10px] font-bold text-blue-800 dark:text-blue-200 uppercase">AI Review</div>
           <h3 className="font-bold text-lg mb-4 dark:text-white">{language === 'English' ? 'Complaint Summary' : 'शिकायत सारांश'}</h3>

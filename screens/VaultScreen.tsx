@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import Layout from '../components/Layout';
 import { useApp } from '../AppContext';
-import { FileText, Plus, Search, MoreVertical, ShieldCheck, Lock, ChevronLeft, Upload, FileQuestion, CheckCircle2, Loader2, Camera, Image as ImageIcon, X } from 'lucide-react';
+import { FileText, Plus, Search, MoreVertical, ShieldCheck, Lock, ChevronLeft, Upload, FileQuestion, CheckCircle2, Loader2, Camera, Image as ImageIcon, X, Trash2, Edit2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type DocCategory = 'Identity' | 'Property' | 'Bills' | 'Health' | 'Official';
@@ -21,6 +21,9 @@ const VaultScreen: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showUploadMenu, setShowUploadMenu] = useState(false);
+  const [selectedDocMenu, setSelectedDocMenu] = useState<number | null>(null);
+  const [renamingDocId, setRenamingDocId] = useState<number | null>(null);
+  const [newDocName, setNewDocName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   
@@ -66,6 +69,27 @@ const VaultScreen: React.FC = () => {
 
   const triggerFileSelect = () => fileInputRef.current?.click();
   const triggerCamera = () => cameraInputRef.current?.click();
+
+  const deleteDocument = (index: number) => {
+    setAllDocs(allDocs.filter((_, i) => i !== index));
+    setSelectedDocMenu(null);
+  };
+
+  const startRenaming = (index: number, currentName: string) => {
+    setRenamingDocId(index);
+    setNewDocName(currentName);
+    setSelectedDocMenu(null);
+  };
+
+  const confirmRename = (index: number) => {
+    if (newDocName.trim()) {
+      const updatedDocs = [...allDocs];
+      updatedDocs[index].title = newDocName;
+      setAllDocs(updatedDocs);
+    }
+    setRenamingDocId(null);
+    setNewDocName('');
+  };
 
   const filteredDocs = allDocs.filter(d => 
     (!selectedCategory || d.type === selectedCategory) &&
@@ -143,9 +167,24 @@ const VaultScreen: React.FC = () => {
               <div className="bg-white border border-sky-50 rounded-[2.5rem] p-8 shadow-sm">
                 <h3 className="font-extrabold text-sky-900 mb-6 text-sm uppercase tracking-widest">Recent Documents</h3>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {filteredDocs.slice(0, 4).map((doc, i) => (
-                    <DocItem key={i} doc={doc} />
-                  ))}
+                  {filteredDocs.slice(0, 4).map((doc, i) => {
+                    const actualIndex = allDocs.findIndex(d => d.title === doc.title && d.type === doc.type);
+                    return (
+                      <DocItem 
+                        key={i} 
+                        doc={doc} 
+                        index={actualIndex}
+                        selectedMenu={selectedDocMenu}
+                        setSelectedMenu={setSelectedDocMenu}
+                        onDelete={deleteDocument}
+                        onRename={startRenaming}
+                        renamingId={renamingDocId}
+                        newName={newDocName}
+                        setNewName={setNewDocName}
+                        confirmRename={confirmRename}
+                      />
+                    );
+                  })}
                   {filteredDocs.length === 0 && (
                     <p className="text-slate-400 font-bold italic py-4">No documents match your search.</p>
                   )}
@@ -187,9 +226,24 @@ const VaultScreen: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredDocs.map((doc, i) => (
-                  <DocItem key={i} doc={doc} />
-                ))}
+                {filteredDocs.map((doc, i) => {
+                  const actualIndex = allDocs.findIndex(d => d.title === doc.title && d.type === doc.type);
+                  return (
+                    <DocItem 
+                      key={i} 
+                      doc={doc}
+                      index={actualIndex}
+                      selectedMenu={selectedDocMenu}
+                      setSelectedMenu={setSelectedDocMenu}
+                      onDelete={deleteDocument}
+                      onRename={startRenaming}
+                      renamingId={renamingDocId}
+                      newName={newDocName}
+                      setNewName={setNewDocName}
+                      confirmRename={confirmRename}
+                    />
+                  );
+                })}
                 {filteredDocs.length === 0 && (
                   <p className="text-slate-400 font-bold italic py-10 text-center col-span-full">No documents found in this category.</p>
                 )}
@@ -227,18 +281,78 @@ const VaultScreen: React.FC = () => {
   );
 };
 
-const DocItem: React.FC<{ doc: Document }> = ({ doc }) => (
-  <div className="bg-sky-50/30 border border-sky-50 p-5 rounded-2xl flex items-center justify-between hover:bg-white hover:shadow-md hover:border-sky-100 transition-all cursor-pointer">
-    <div className="flex items-center gap-4">
-      <div className="bg-white p-3 rounded-xl shadow-sm">
-        <Lock size={20} className="text-sky-300" />
+const DocItem: React.FC<{ doc: Document, index: number, selectedMenu: number | null, setSelectedMenu: (id: number | null) => void, onDelete: (index: number) => void, onRename: (index: number, name: string) => void, renamingId: number | null, newName: string, setNewName: (name: string) => void, confirmRename: (index: number) => void }> = ({ 
+  doc, index, selectedMenu, setSelectedMenu, onDelete, onRename, renamingId, newName, setNewName, confirmRename 
+}) => (
+  <div className="relative">
+    {renamingId === index ? (
+      <div className="bg-sky-50/30 border border-sky-50 p-5 rounded-2xl flex items-center gap-4">
+        <input 
+          type="text"
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          className="flex-1 bg-white border border-sky-100 rounded-lg px-3 py-2 font-bold text-sky-900 outline-none focus:ring-2 focus:ring-sky-300"
+          autoFocus
+        />
+        <button 
+          onClick={() => confirmRename(index)}
+          className="px-4 py-2 bg-sky-500 text-white rounded-lg font-bold hover:bg-sky-600"
+        >
+          Save
+        </button>
+        <button 
+          onClick={() => setRenamingId(null)}
+          className="px-4 py-2 bg-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-300"
+        >
+          Cancel
+        </button>
       </div>
-      <div>
-        <h4 className="font-bold text-sky-900">{doc.title}</h4>
-        <p className="text-[10px] text-sky-300 font-bold uppercase tracking-wider">{doc.size} • {doc.date}</p>
-      </div>
-    </div>
-    <MoreVertical size={20} className="text-sky-200" />
+    ) : (
+      <>
+        <div className="bg-sky-50/30 border border-sky-50 p-5 rounded-2xl flex items-center justify-between hover:bg-white hover:shadow-md hover:border-sky-100 transition-all cursor-pointer">
+          <div className="flex items-center gap-4">
+            <div className="bg-white p-3 rounded-xl shadow-sm">
+              <Lock size={20} className="text-sky-300" />
+            </div>
+            <div>
+              <h4 className="font-bold text-sky-900">{doc.title}</h4>
+              <p className="text-[10px] text-sky-300 font-bold uppercase tracking-wider">{doc.size} • {doc.date}</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => setSelectedMenu(selectedMenu === index ? null : index)}
+            className="p-2 hover:bg-sky-100 rounded-lg transition-colors"
+          >
+            <MoreVertical size={20} className="text-sky-200" />
+          </button>
+        </div>
+
+        {/* Context Menu */}
+        <AnimatePresence>
+          {selectedMenu === index && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute top-full right-0 mt-2 bg-white border border-sky-100 rounded-2xl shadow-lg z-50 overflow-hidden"
+            >
+              <button 
+                onClick={() => onRename(index, doc.title)}
+                className="w-full px-6 py-3 flex items-center gap-3 hover:bg-sky-50 transition-colors text-sky-700 font-bold text-sm"
+              >
+                <Edit2 size={16} /> Rename
+              </button>
+              <button 
+                onClick={() => onDelete(index)}
+                className="w-full px-6 py-3 flex items-center gap-3 hover:bg-rose-50 transition-colors text-rose-600 font-bold text-sm"
+              >
+                <Trash2 size={16} /> Delete
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
+    )}
   </div>
 );
 
