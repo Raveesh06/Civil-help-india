@@ -6,6 +6,7 @@ import { Screen, Category, Complaint } from '../types';
 import { FileText, Mic, Users, CheckCircle, ChevronRight, AlertCircle, Loader2, MapPin } from 'lucide-react';
 import FilingAnimation from '../components/FilingAnimation';
 import TicketAssessment from '../components/TicketAssessment';
+import { THEME, THEME_CLASSES } from '../theme';
 
 const RaiseIssueFlow: React.FC = () => {
   const { currentScreen, t } = useApp();
@@ -94,15 +95,25 @@ const OptionSelection = ({ reset }: { reset: () => void }) => {
 const SelectionCard = ({ icon, title, desc, onClick }: any) => {
   const { isElderlyMode } = useApp();
   return (
-    <button onClick={onClick} className="flex items-center gap-5 p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl text-left active:scale-[0.98] transition-all hover:border-blue-300 dark:hover:border-blue-700 group">
-      <div className="bg-slate-50 dark:bg-slate-700 p-3 rounded-2xl group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
+    <button onClick={onClick} className="flex items-center gap-5 p-6 border rounded-3xl text-left active:scale-[0.98] transition-all group"
+      style={{ 
+        backgroundColor: 'white',
+        borderColor: THEME.primary.lighter
+      }}>
+      <div className="p-3 rounded-2xl group-hover:transition-colors transition-colors" 
+        style={{ 
+          backgroundColor: THEME.primary.lighter
+        }}>
         {icon}
       </div>
       <div className="flex-1">
-        <h3 className={`font-bold ${isElderlyMode ? 'text-xl' : 'text-lg'} text-slate-900 dark:text-white`}>{title}</h3>
-        <p className="text-slate-500 dark:text-slate-400 text-sm">{desc}</p>
+        <h3 className={`font-bold ${isElderlyMode ? 'text-xl' : 'text-lg'}`}
+          style={{ color: THEME.primary.darker }}>
+          {title}
+        </h3>
+        <p className="text-sm" style={{ color: THEME.neutral.text.secondary }}>{desc}</p>
       </div>
-      <ChevronRight className="text-slate-300" />
+      <ChevronRight style={{ color: THEME.neutral.text.light }} />
     </button>
   );
 };
@@ -146,16 +157,22 @@ const FileOnlineForm = ({ category, setCategory, selections, setSelections, addr
     <Layout title={t('fileOnline')} showBack>
       <div className="space-y-6">
         {/* Toggle between categories and free text */}
-        <div className="flex gap-3 bg-white dark:bg-slate-800 p-1 rounded-full border border-slate-200 dark:border-slate-700">
+        <div className="flex gap-3 p-1 rounded-full border"
+          style={{ 
+            backgroundColor: 'white',
+            borderColor: THEME.primary.lighter
+          }}>
           <button 
             onClick={() => setUseFreeText(false)}
-            className={`flex-1 py-3 px-4 rounded-full font-bold text-sm transition-all ${!useFreeText ? 'bg-blue-700 text-white' : 'text-slate-600 dark:text-slate-400'}`}
+            className={`flex-1 py-3 px-4 rounded-full font-bold text-sm transition-all text-white`}
+            style={{ backgroundColor: !useFreeText ? THEME.primary.light : 'transparent', color: !useFreeText ? 'white' : THEME.neutral.text.secondary }}
           >
             {language === 'English' ? 'Select Category' : 'श्रेणी चुनें'}
           </button>
           <button 
             onClick={() => setUseFreeText(true)}
-            className={`flex-1 py-3 px-4 rounded-full font-bold text-sm transition-all ${useFreeText ? 'bg-purple-700 text-white' : 'text-slate-600 dark:text-slate-400'}`}
+            className={`flex-1 py-3 px-4 rounded-full font-bold text-sm transition-all`}
+            style={{ backgroundColor: useFreeText ? THEME.primary.dark : 'transparent', color: useFreeText ? 'white' : THEME.neutral.text.secondary }}
           >
             {language === 'English' ? 'Describe Your Issue' : 'समस्या बताएं'}
           </button>
@@ -164,13 +181,22 @@ const FileOnlineForm = ({ category, setCategory, selections, setSelections, addr
         {!useFreeText ? (
           <>
             <div>
-              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider">{t('step1Cat')}</label>
+              <label className="block text-sm font-bold mb-3 uppercase tracking-wider"
+                style={{ color: THEME.primary.darker }}>
+                {t('step1Cat')}
+              </label>
               <div className="flex flex-wrap gap-2">
                 {categoryMapping.map(cat => (
                   <button 
                     key={cat.label} 
                     onClick={() => { setCategory(cat.label); setSelections([]); }}
-                    className={`px-4 py-3 rounded-2xl text-sm font-bold border transition-all ${category === cat.label ? 'bg-blue-700 text-white border-blue-800 shadow-md' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}`}
+                    className={`px-4 py-3 rounded-2xl text-sm font-bold border transition-all`}
+                    style={{
+                      backgroundColor: category === cat.label ? THEME.primary.light : 'white',
+                      color: category === cat.label ? 'white' : THEME.primary.darker,
+                      borderColor: category === cat.label ? THEME.primary.dark : THEME.primary.lighter,
+                      boxShadow: category === cat.label ? '0 4px 12px rgba(14, 165, 233, 0.3)' : 'none'
+                    }}
                   >
                     {t(cat.tKey)}
                   </button>
@@ -180,30 +206,54 @@ const FileOnlineForm = ({ category, setCategory, selections, setSelections, addr
 
             {category && (
               <div className="animate-fade-in">
-                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider">{t('step2Issue')}</label>
+                <label className="block text-sm font-bold mb-3 uppercase tracking-wider"
+                  style={{ color: THEME.primary.darker }}>
+                  {t('step2Issue')}
+                </label>
                 <div className="space-y-2">
                   {subOptions[category].map(opt => (
-                    <label key={opt} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all cursor-pointer ${selections.includes(opt) ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}>
+                    <label key={opt} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all cursor-pointer`}
+                      style={{
+                        backgroundColor: selections.includes(opt) ? THEME.primary.lighter : 'white',
+                        borderColor: selections.includes(opt) ? THEME.primary.light : THEME.primary.lighter,
+                      }}>
                       <input 
                         type="checkbox" 
-                        className="w-5 h-5 rounded-md border-slate-300 text-blue-600 focus:ring-blue-500"
+                        className="w-5 h-5 rounded-md"
                         checked={selections.includes(opt)}
                         onChange={() => handleToggle(opt)}
+                        style={{
+                          borderColor: THEME.primary.light,
+                          accentColor: THEME.primary.light
+                        }}
                       />
-                      <span className={`font-semibold ${isElderlyMode ? 'text-lg' : 'text-base'} dark:text-white`}>{opt}</span>
+                      <span className={`font-semibold ${isElderlyMode ? 'text-lg' : 'text-base'}`}
+                        style={{ color: THEME.primary.darker }}>
+                        {opt}
+                      </span>
                     </label>
                   ))}
                 </div>
               </div>
             )}
 
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-               <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider flex items-center gap-2">
+            <div className="p-6 rounded-3xl border shadow-sm"
+              style={{ 
+                backgroundColor: 'white',
+                borderColor: THEME.primary.lighter
+              }}>
+               <label className="block text-sm font-bold mb-3 uppercase tracking-wider flex items-center gap-2"
+                 style={{ color: THEME.primary.darker }}>
                  <MapPin size={16} /> {t('locationAddress')}
                </label>
                <textarea 
                  placeholder={t('locationPlaceholder')}
-                 className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-xl p-4 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-200 dark:text-white min-h-[100px]"
+                 className="w-full border rounded-xl p-4 text-sm font-medium outline-none min-h-[100px]"
+                 style={{ 
+                   backgroundColor: THEME.primary.lighter,
+                   borderColor: THEME.primary.light,
+                   color: THEME.primary.darker
+                 }}
                  value={address}
                  onChange={(e) => setAddress(e.target.value)}
                />
@@ -212,18 +262,29 @@ const FileOnlineForm = ({ category, setCategory, selections, setSelections, addr
             <button 
               onClick={() => setScreen(Screen.AI_REVIEW)}
               disabled={!category || selections.length === 0 || !address.trim()}
-              className={`w-full py-5 rounded-2xl font-bold text-lg mt-4 shadow-lg transition-all active:scale-95 ${category && selections.length > 0 && address.trim() ? 'bg-blue-700 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'}`}
+              className={`w-full py-5 rounded-2xl font-bold text-lg mt-4 shadow-lg transition-all active:scale-95`}
+              style={{ 
+                backgroundColor: category && selections.length > 0 && address.trim() ? THEME.primary.light : THEME.neutral.bg.medium,
+                color: category && selections.length > 0 && address.trim() ? 'white' : THEME.neutral.text.light,
+                cursor: category && selections.length > 0 && address.trim() ? 'pointer' : 'not-allowed'
+              }}
             >
               {t('reviewApp')}
             </button>
           </>
         ) : (
           <>
-            <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 p-6 rounded-3xl">
-              <h3 className="font-bold text-lg text-purple-900 dark:text-purple-100 mb-2">
+            <div className="border p-6 rounded-3xl"
+              style={{ 
+                backgroundColor: THEME.primary.lighter,
+                borderColor: THEME.primary.light
+              }}>
+              <h3 className="font-bold text-lg mb-2"
+                style={{ color: THEME.primary.darker }}>
                 {language === 'English' ? 'Describe Your Problem' : 'अपनी समस्या का वर्णन करें'}
               </h3>
-              <p className="text-sm text-purple-700 dark:text-purple-200 mb-4">
+              <p className="text-sm mb-4"
+                style={{ color: THEME.primary.dark }}>
                 {language === 'English' 
                   ? 'Tell us about your issue in your own words. Include details like when it happened, where, and who was involved.'
                   : 'अपनी समस्या के बारे में अपने शब्दों में बताएं। यह कब हुआ, कहाँ, और कौन शामिल था, इसके विवरण दें।'}
@@ -232,19 +293,34 @@ const FileOnlineForm = ({ category, setCategory, selections, setSelections, addr
                 placeholder={language === 'English' 
                   ? 'Example: My electricity bill has tripled without any explanation...'
                   : 'उदाहरण: मेरा बिजली बिल बिना किसी कारण के तीन गुना हो गया है...'}
-                className="w-full bg-white dark:bg-slate-800 border border-purple-100 dark:border-purple-700 rounded-xl p-4 text-sm font-medium outline-none focus:ring-2 focus:ring-purple-300 dark:text-white min-h-[150px] resize-none"
+                className="w-full border rounded-xl p-4 text-sm font-medium outline-none min-h-[150px] resize-none"
+                style={{ 
+                  backgroundColor: 'white',
+                  borderColor: THEME.primary.light,
+                  color: THEME.primary.darker
+                }}
                 value={freeText}
                 onChange={(e) => setFreeText(e.target.value)}
               />
             </div>
 
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-               <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider flex items-center gap-2">
+            <div className="p-6 rounded-3xl border shadow-sm"
+              style={{ 
+                backgroundColor: 'white',
+                borderColor: THEME.primary.lighter
+              }}>
+               <label className="block text-sm font-bold mb-3 uppercase tracking-wider flex items-center gap-2"
+                 style={{ color: THEME.primary.darker }}>
                  <MapPin size={16} /> {t('locationAddress')}
                </label>
                <textarea 
                  placeholder={t('locationPlaceholder')}
-                 className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-xl p-4 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-200 dark:text-white min-h-[100px]"
+                 className="w-full border rounded-xl p-4 text-sm font-medium outline-none min-h-[100px]"
+                 style={{ 
+                   backgroundColor: THEME.primary.lighter,
+                   borderColor: THEME.primary.light,
+                   color: THEME.primary.darker
+                 }}
                  value={address}
                  onChange={(e) => setAddress(e.target.value)}
                />
