@@ -165,14 +165,14 @@ const FileOnlineForm = ({ category, setCategory, selections, setSelections, addr
           <button 
             onClick={() => setUseFreeText(false)}
             className={`flex-1 py-3 px-4 rounded-full font-bold text-sm transition-all text-white`}
-            style={{ backgroundColor: !useFreeText ? THEME.primary.light : 'transparent', color: !useFreeText ? 'white' : THEME.neutral.text.secondary }}
+            style={{ backgroundColor: !useFreeText ? THEME.primary.light : 'transparent', color: !useFreeText ? 'white' : THEME.neutral.text.primary }}
           >
             {language === 'English' ? 'Select Category' : 'श्रेणी चुनें'}
           </button>
           <button 
             onClick={() => setUseFreeText(true)}
             className={`flex-1 py-3 px-4 rounded-full font-bold text-sm transition-all`}
-            style={{ backgroundColor: useFreeText ? THEME.primary.dark : 'transparent', color: useFreeText ? 'white' : THEME.neutral.text.secondary }}
+            style={{ backgroundColor: useFreeText ? THEME.primary.dark : 'transparent', color: useFreeText ? 'white' : THEME.neutral.text.primary }}
           >
             {language === 'English' ? 'Describe Your Issue' : 'समस्या बताएं'}
           </button>

@@ -123,7 +123,7 @@ const Dashboard: React.FC = () => {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h2 className={`font-extrabold tracking-tight ${isElderlyMode ? 'text-4xl' : 'text-3xl'}`}>{greeting}</h2>
-                <p className="font-bold text-sm uppercase tracking-widest mt-1" style={{ color: THEME.primary.light }}>
+                <p className="font-bold text-sm uppercase tracking-widest mt-1" style={{ color: THEME.primary.lighter }}>
                   {t('tagline')}
                 </p>
               </div>
@@ -135,7 +135,7 @@ const Dashboard: React.FC = () => {
                 borderColor: 'rgba(255, 255, 255, 0.05)'
               }}>
               <div className="flex justify-between text-[10px] font-bold mb-2 uppercase tracking-widest"
-                style={{ color: THEME.primary.lighter }}>
+                style={{ color: THEME.primary.light }}>
                 <span>{t('readiness')}</span>
                 <span>65%</span>
               </div>
@@ -170,7 +170,7 @@ const Dashboard: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 className="text-base font-bold absolute inset-0 truncate"
-                style={{ color: THEME.neutral.text.secondary }}
+                style={{ color: THEME.neutral.text.primary }}
               >
                 {spotlights[activeSpotlight].text}
               </motion.p>
@@ -216,7 +216,7 @@ const Dashboard: React.FC = () => {
                   {card.title}
                 </h3>
                 <p className={`font-medium ${isElderlyMode ? 'text-lg' : 'text-sm'}`}
-                  style={{ color: THEME.neutral.text.light }}>
+                  style={{ color: THEME.neutral.text.secondary }}>
                   {card.desc}
                 </p>
               </div>
@@ -259,7 +259,7 @@ const Dashboard: React.FC = () => {
                 {t('callHelpline')}
               </h2>
               <p className="text-center mb-10 font-medium px-4"
-                style={{ color: THEME.neutral.text.secondary }}>
+                style={{ color: THEME.neutral.text.primary }}>
                 {language === 'English' ? 'Our agents are here to help you in your regional language.' : 'हमारे एजेंट आपकी क्षेत्रीय भाषा में आपकी सहायता के लिए यहां हैं।'}
               </p>
 
@@ -358,7 +358,7 @@ const Dashboard: React.FC = () => {
                        {formatTime(countdown)}
                      </span>
                      <p className="font-bold uppercase tracking-widest text-[10px]"
-                       style={{ color: THEME.neutral.text.secondary }}>
+                       style={{ color: THEME.neutral.text.primary }}>
                        {language === 'English' ? 'Estimated Wait Time' : 'अनुमानित प्रतीक्षा समय'}
                      </p>
                   </div>

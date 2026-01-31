@@ -100,7 +100,7 @@ const LoginScreen: React.FC = () => {
             }}>
             <div>
               <label className="block text-[10px] font-extrabold mb-2 uppercase tracking-widest"
-                style={{ color: THEME.primary.light }}>
+                style={{ color: THEME.primary.darker }}>
                 {t('fullName')}
               </label>
               <div className="relative">
@@ -122,7 +122,7 @@ const LoginScreen: React.FC = () => {
 
             <div>
               <label className="block text-[10px] font-extrabold mb-2 uppercase tracking-widest"
-                style={{ color: THEME.primary.light }}>
+                style={{ color: THEME.primary.darker }}>
                 {language === 'English' ? 'Email Address' : 'ईमेल पता'}
               </label>
               <div className="relative">
@@ -147,12 +147,12 @@ const LoginScreen: React.FC = () => {
 
             <div>
               <label className="block text-[10px] font-extrabold mb-2 uppercase tracking-widest"
-                style={{ color: THEME.primary.light }}>
+                style={{ color: THEME.primary.darker }}>
                 {t('phoneNum')}
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold"
-                  style={{ color: THEME.primary.light }}>
+                  style={{ color: THEME.primary.darker }}>
                   +91
                 </span>
                 <input 
@@ -190,7 +190,7 @@ const LoginScreen: React.FC = () => {
         <button 
           onClick={() => setShowHelp(true)}
           className="mt-8 flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-widest"
-          style={{ color: THEME.primary.light }}
+          style={{ color: THEME.primary.dark }}
         >
           <HelpCircle size={18} />
           {t('assistance')}
@@ -214,7 +214,7 @@ const LoginScreen: React.FC = () => {
                 {language === 'English' ? 'Remote Assistance' : 'रिमोट सहायता'}
               </h2>
               <p className="mb-8 leading-relaxed font-medium"
-                style={{ color: THEME.neutral.text.secondary }}>
+                style={{ color: THEME.neutral.text.primary }}>
                 {language === 'English' ? "If you're facing trouble, our assistants can help you login over the phone." : "यदि आप परेशानी का सामना कर रहे हैं, तो हमारे सहायक आपको फोन पर लॉगिन करने में मदद कर सकते हैं।"}
               </p>
               <div className="space-y-3">
