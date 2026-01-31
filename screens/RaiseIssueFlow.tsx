@@ -14,12 +14,14 @@ const RaiseIssueFlow: React.FC = () => {
   const [selections, setSelections] = useState<string[]>([]);
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
+  const [freeTextInput, setFreeTextInput] = useState('');
   
   const resetFlow = () => {
     setCategory('');
     setSelections([]);
     setAddress('');
     setDescription('');
+    setFreeTextInput('');
   };
 
   if (currentScreen === Screen.RAISE_ISSUE_OPTIONS) return <OptionSelection reset={resetFlow} />;
@@ -27,6 +29,7 @@ const RaiseIssueFlow: React.FC = () => {
       category={category} setCategory={setCategory} 
       selections={selections} setSelections={setSelections}
       address={address} setAddress={setAddress}
+      setFreeTextInput={setFreeTextInput}
     />;
   if (currentScreen === Screen.SPEAK_AND_FILE) return <SpeakAndFile 
       address={address} setAddress={setAddress}
@@ -37,18 +40,20 @@ const RaiseIssueFlow: React.FC = () => {
     />;
   if (currentScreen === Screen.AI_REVIEW) return <AIReviewScreen 
       category={category} selections={selections} 
-      address={address} description={description} 
+      address={address} description={description}
+      freeTextInput={freeTextInput}
     />;
   if (currentScreen === Screen.SUBMISSION_ANIMATION) return <SubmissionAnimationScreen 
       category={category} selections={selections}
       address={address} description={description}
+      freeTextInput={freeTextInput}
     />;
   
   return null;
 };
 
 const OptionSelection = ({ reset }: { reset: () => void }) => {
-  const { setScreen, t } = useApp();
+  const { setScreen, t, language } = useApp();
   React.useEffect(reset, []);
   
   return (
@@ -60,6 +65,12 @@ const OptionSelection = ({ reset }: { reset: () => void }) => {
             icon={<FileText className="text-blue-600" size={32} />}
             title={t('fileOnline')}
             desc={t('fileOnlineDesc')}
+            onClick={() => setScreen(Screen.FILE_ONLINE)}
+          />
+          <SelectionCard 
+            icon={<AlertCircle className="text-purple-600" size={32} />}
+            title={language === 'English' ? 'Describe Your Issue' : 'अपनी समस्या बताएं'}
+            desc={language === 'English' ? 'Tell us about your problem in your own words' : 'अपनी समस्या के बारे में अपने शब्दों में बताएं'}
             onClick={() => setScreen(Screen.FILE_ONLINE)}
           />
           <SelectionCard 
@@ -96,8 +107,10 @@ const SelectionCard = ({ icon, title, desc, onClick }: any) => {
   );
 };
 
-const FileOnlineForm = ({ category, setCategory, selections, setSelections, address, setAddress }: any) => {
+const FileOnlineForm = ({ category, setCategory, selections, setSelections, address, setAddress, setFreeTextInput }: any) => {
   const { setScreen, isElderlyMode, t, language } = useApp();
+  const [useFreeText, setUseFreeText] = useState(false);
+  const [freeText, setFreeText] = useState('');
 
   const categoryMapping: {label: Category, tKey: any}[] = [
     {label: 'Electricity & Utilities', tKey: 'catElectricity'},
@@ -121,62 +134,131 @@ const FileOnlineForm = ({ category, setCategory, selections, setSelections, addr
     setSelections((prev: string[]) => prev.includes(opt) ? prev.filter(i => i !== opt) : [...prev, opt]);
   };
 
+  const handleFreeTextSubmit = () => {
+    if (freeText.trim() && address.trim()) {
+      setFreeTextInput(freeText);
+      setCategory('Free Text');
+      setScreen(Screen.AI_REVIEW);
+    }
+  };
+
   return (
     <Layout title={t('fileOnline')} showBack>
       <div className="space-y-6">
-        <div>
-          <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider">{t('step1Cat')}</label>
-          <div className="flex flex-wrap gap-2">
-            {categoryMapping.map(cat => (
-              <button 
-                key={cat.label} 
-                onClick={() => { setCategory(cat.label); setSelections([]); }}
-                className={`px-4 py-3 rounded-2xl text-sm font-bold border transition-all ${category === cat.label ? 'bg-blue-700 text-white border-blue-800 shadow-md' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}`}
-              >
-                {t(cat.tKey)}
-              </button>
-            ))}
-          </div>
+        {/* Toggle between categories and free text */}
+        <div className="flex gap-3 bg-white dark:bg-slate-800 p-1 rounded-full border border-slate-200 dark:border-slate-700">
+          <button 
+            onClick={() => setUseFreeText(false)}
+            className={`flex-1 py-3 px-4 rounded-full font-bold text-sm transition-all ${!useFreeText ? 'bg-blue-700 text-white' : 'text-slate-600 dark:text-slate-400'}`}
+          >
+            {language === 'English' ? 'Select Category' : 'श्रेणी चुनें'}
+          </button>
+          <button 
+            onClick={() => setUseFreeText(true)}
+            className={`flex-1 py-3 px-4 rounded-full font-bold text-sm transition-all ${useFreeText ? 'bg-purple-700 text-white' : 'text-slate-600 dark:text-slate-400'}`}
+          >
+            {language === 'English' ? 'Describe Your Issue' : 'समस्या बताएं'}
+          </button>
         </div>
 
-        {category && (
-          <div className="animate-fade-in">
-            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider">{t('step2Issue')}</label>
-            <div className="space-y-2">
-              {subOptions[category].map(opt => (
-                <label key={opt} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all cursor-pointer ${selections.includes(opt) ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}>
-                  <input 
-                    type="checkbox" 
-                    className="w-5 h-5 rounded-md border-slate-300 text-blue-600 focus:ring-blue-500"
-                    checked={selections.includes(opt)}
-                    onChange={() => handleToggle(opt)}
-                  />
-                  <span className={`font-semibold ${isElderlyMode ? 'text-lg' : 'text-base'} dark:text-white`}>{opt}</span>
-                </label>
-              ))}
+        {!useFreeText ? (
+          <>
+            <div>
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider">{t('step1Cat')}</label>
+              <div className="flex flex-wrap gap-2">
+                {categoryMapping.map(cat => (
+                  <button 
+                    key={cat.label} 
+                    onClick={() => { setCategory(cat.label); setSelections([]); }}
+                    className={`px-4 py-3 rounded-2xl text-sm font-bold border transition-all ${category === cat.label ? 'bg-blue-700 text-white border-blue-800 shadow-md' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}`}
+                  >
+                    {t(cat.tKey)}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+
+            {category && (
+              <div className="animate-fade-in">
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider">{t('step2Issue')}</label>
+                <div className="space-y-2">
+                  {subOptions[category].map(opt => (
+                    <label key={opt} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all cursor-pointer ${selections.includes(opt) ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`}>
+                      <input 
+                        type="checkbox" 
+                        className="w-5 h-5 rounded-md border-slate-300 text-blue-600 focus:ring-blue-500"
+                        checked={selections.includes(opt)}
+                        onChange={() => handleToggle(opt)}
+                      />
+                      <span className={`font-semibold ${isElderlyMode ? 'text-lg' : 'text-base'} dark:text-white`}>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+               <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider flex items-center gap-2">
+                 <MapPin size={16} /> {t('locationAddress')}
+               </label>
+               <textarea 
+                 placeholder={t('locationPlaceholder')}
+                 className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-xl p-4 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-200 dark:text-white min-h-[100px]"
+                 value={address}
+                 onChange={(e) => setAddress(e.target.value)}
+               />
+            </div>
+
+            <button 
+              onClick={() => setScreen(Screen.AI_REVIEW)}
+              disabled={!category || selections.length === 0 || !address.trim()}
+              className={`w-full py-5 rounded-2xl font-bold text-lg mt-4 shadow-lg transition-all active:scale-95 ${category && selections.length > 0 && address.trim() ? 'bg-blue-700 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'}`}
+            >
+              {t('reviewApp')}
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 p-6 rounded-3xl">
+              <h3 className="font-bold text-lg text-purple-900 dark:text-purple-100 mb-2">
+                {language === 'English' ? 'Describe Your Problem' : 'अपनी समस्या का वर्णन करें'}
+              </h3>
+              <p className="text-sm text-purple-700 dark:text-purple-200 mb-4">
+                {language === 'English' 
+                  ? 'Tell us about your issue in your own words. Include details like when it happened, where, and who was involved.'
+                  : 'अपनी समस्या के बारे में अपने शब्दों में बताएं। यह कब हुआ, कहाँ, और कौन शामिल था, इसके विवरण दें।'}
+              </p>
+              <textarea 
+                placeholder={language === 'English' 
+                  ? 'Example: My electricity bill has tripled without any explanation...'
+                  : 'उदाहरण: मेरा बिजली बिल बिना किसी कारण के तीन गुना हो गया है...'}
+                className="w-full bg-white dark:bg-slate-800 border border-purple-100 dark:border-purple-700 rounded-xl p-4 text-sm font-medium outline-none focus:ring-2 focus:ring-purple-300 dark:text-white min-h-[150px] resize-none"
+                value={freeText}
+                onChange={(e) => setFreeText(e.target.value)}
+              />
+            </div>
+
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+               <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider flex items-center gap-2">
+                 <MapPin size={16} /> {t('locationAddress')}
+               </label>
+               <textarea 
+                 placeholder={t('locationPlaceholder')}
+                 className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-xl p-4 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-200 dark:text-white min-h-[100px]"
+                 value={address}
+                 onChange={(e) => setAddress(e.target.value)}
+               />
+            </div>
+
+            <button 
+              onClick={handleFreeTextSubmit}
+              disabled={!freeText.trim() || !address.trim()}
+              className={`w-full py-5 rounded-2xl font-bold text-lg mt-4 shadow-lg transition-all active:scale-95 ${freeText.trim() && address.trim() ? 'bg-purple-700 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'}`}
+            >
+              {language === 'English' ? 'Analyze & Review' : 'विश्लेषण और समीक्षा'}
+            </button>
+          </>
         )}
-
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-           <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider flex items-center gap-2">
-             <MapPin size={16} /> {t('locationAddress')}
-           </label>
-           <textarea 
-             placeholder={t('locationPlaceholder')}
-             className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-xl p-4 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-200 dark:text-white min-h-[100px]"
-             value={address}
-             onChange={(e) => setAddress(e.target.value)}
-           />
-        </div>
-
-        <button 
-          onClick={() => setScreen(Screen.AI_REVIEW)}
-          disabled={!category || selections.length === 0 || !address.trim()}
-          className={`w-full py-5 rounded-2xl font-bold text-lg mt-4 shadow-lg transition-all active:scale-95 ${category && selections.length > 0 && address.trim() ? 'bg-blue-700 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'}`}
-        >
-          {t('reviewApp')}
-        </button>
       </div>
     </Layout>
   );
@@ -304,34 +386,39 @@ const AssistedHelpForm = ({ address, setAddress }: any) => {
   );
 };
 
-const AIReviewScreen = ({ category, selections, address, description }: any) => {
+const AIReviewScreen = ({ category, selections, address, description, freeTextInput }: any) => {
   const { setScreen, t, language } = useApp();
+
+  // Use free text input if available, otherwise use structured input
+  const finalDescription = freeTextInput || description || (selections.length > 0 ? selections.join(', ') : '');
 
   return (
     <Layout title={language === 'English' ? "Review & Submit" : "समीक्षा और सबमिट करें"} showBack>
       <div className="space-y-6">
         {/* Ticket Assessment Component */}
         <TicketAssessment
-          category={category}
-          selections={selections}
-          description={description}
+          category={freeTextInput ? 'Free Text' : category}
+          selections={freeTextInput ? [] : selections}
+          description={finalDescription}
           language={language}
         />
 
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 p-6 rounded-3xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded-bl-xl text-[10px] font-bold text-blue-800 dark:text-blue-200 uppercase">AI Review</div>
-          <h3 className="font-bold text-lg mb-4 dark:text-white">{language === 'English' ? 'Complaint Summary' : 'शिकायत सारांश'}</h3>
+          <div className="absolute top-0 right-0 bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded-bl-xl text-[10px] font-bold text-blue-800 dark:text-blue-200 uppercase">Summary</div>
+          <h3 className="font-bold text-lg mb-4 dark:text-white">{language === 'English' ? 'Complaint Details' : 'शिकायत विवरण'}</h3>
           <div className="space-y-4 text-sm text-slate-700 dark:text-slate-300 font-medium">
-            <div className="pb-3 border-b border-blue-100/50 dark:border-slate-700">
-              <span className="text-[10px] uppercase text-blue-400 block mb-1">{language === 'English' ? 'Subject' : 'विषय'}</span>
-              <p>{language === 'English' ? 'Grievance' : 'शिकायत'}: {category} - {selections.join(', ')}</p>
-            </div>
+            {!freeTextInput && (
+              <div className="pb-3 border-b border-blue-100/50 dark:border-slate-700">
+                <span className="text-[10px] uppercase text-blue-400 block mb-1">{language === 'English' ? 'Subject' : 'विषय'}</span>
+                <p>{language === 'English' ? 'Grievance' : 'शिकायत'}: {category} - {selections.join(', ')}</p>
+              </div>
+            )}
             <div className="pb-3 border-b border-blue-100/50 dark:border-slate-700">
               <span className="text-[10px] uppercase text-blue-400 block mb-1">{language === 'English' ? 'Description' : 'विवरण'}</span>
-              <p>{description || (language === 'English' ? 'Requesting immediate verification.' : 'तत्काल सत्यापन का अनुरोध।')}</p>
+              <p>{finalDescription || (language === 'English' ? 'Requesting verification.' : 'सत्यापन का अनुरोध।')}</p>
             </div>
             <div>
-              <span className="text-[10px] uppercase text-blue-400 block mb-1">{language === 'English' ? 'Incident Location' : 'घटना स्थल'}</span>
+              <span className="text-[10px] uppercase text-blue-400 block mb-1">{language === 'English' ? 'Location' : 'स्थान'}</span>
               <p className="flex items-center gap-2"><MapPin size={14} className="text-rose-400" /> {address}</p>
             </div>
           </div>
@@ -348,20 +435,25 @@ const AIReviewScreen = ({ category, selections, address, description }: any) => 
   );
 };
 
-const SubmissionAnimationScreen = ({ category, selections, address, description }: any) => {
+const SubmissionAnimationScreen = ({ category, selections, address, description, freeTextInput }: any) => {
   const { setScreen, addComplaint, language, t } = useApp();
   const [done, setDone] = React.useState(false);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
       const newId = `#SAH-${Math.floor(Math.random() * 900000 + 100000)}`;
+      const finalTitle = freeTextInput 
+        ? (freeTextInput.split('\n')[0].substring(0, 50) + '...')
+        : (selections.length > 0 ? selections[0] : (category || 'Civic Issue'));
+      const finalDescription = freeTextInput || description || 'No additional details provided.';
+      
       const newComplaint: Complaint = {
         id: newId,
-        title: selections.length > 0 ? selections[0] : (category || 'Civic Issue'),
-        category: (category as Category) || 'Others',
+        title: finalTitle,
+        category: freeTextInput ? 'Others' : ((category as Category) || 'Others'),
         status: 'Submitted',
         date: language === 'English' ? 'Today, Just now' : 'आज, अभी',
-        description: description || 'No additional details provided.',
+        description: finalDescription,
         address: address
       };
       addComplaint(newComplaint);
@@ -382,7 +474,7 @@ const SubmissionAnimationScreen = ({ category, selections, address, description 
             <FilingAnimation />
             <div className="flex items-center justify-center gap-3 text-blue-600">
               <Loader2 className="animate-spin" size={20} />
-              <span className="font-bold text-xs uppercase tracking-widest">{language === 'English' ? 'Registering Location Data' : 'स्थान डेटा पंजीकृत किया जा रहा है'}</span>
+              <span className="font-bold text-xs uppercase tracking-widest">{language === 'English' ? 'Analyzing & Registering' : 'विश्लेषण और पंजीकरण जारी'}</span>
             </div>
           </div>
         ) : (
