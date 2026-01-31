@@ -141,7 +141,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, showBack, hideNav }) =
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold truncate" style={{ color: THEME.primary.darker }}>
+                    <p className="text-xs font-bold truncate" style={{ color: theme === 'dark' ? THEME.dark.text.primary : THEME.neutral.text.secondary }}>
                       {userName || t('citizen')}
                     </p>
                     <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: THEME.primary.dark }}>
